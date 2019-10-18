@@ -1,9 +1,12 @@
 import numpy as np
 from numpy.linalg import matrix_power
-from numpy.random import default_rng
+from numpy.random import default_rng, PCG64
 from numba import jit
 import time
 rg = default_rng()
+x = PCG64()
+f_pcg64 = x.ctypes.next_double
+state_addr = x.ctypes.state_address
 
 
 ## fibonacci ##
@@ -56,11 +59,20 @@ def randmatstat(t):
     return randmatstat_core(t, a, b, c, d)
 
 ## randmatmul ##
+# https://docs.scipy.org/doc/numpy/reference/random/extending.html
+@jit(nopython=True)
+def pcg64_random(n, state):
+    out = np.empty((n, n))
+    for i in range(n):
+        for j in range(n):
+            out[i, j] = f_pcg64(state)
+    return out
 
-def randmatmul(n):
-    A = rg.random((n,n))
-    B = rg.random((n,n))
-    return np.dot(A,B)
+@jit(nopython=True)
+def randmatmul(n, state):
+    a = pcg64_random(n, state)
+    b = pcg64_random(n, state)
+    return np.dot(a, b)
 
 ## mandelbrot ##
 @jit(nopython=True, cache=True)
@@ -255,7 +267,7 @@ if __name__=="__main__":
     tmin = float('inf')
     for i in range(mintrials):
         t = time.time()
-        C = randmatmul(1000)
+        C = randmatmul(1000, state_addr)
         assert C[0,0] >= 0
         t = time.time()-t
         if t < tmin: tmin = t

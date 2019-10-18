@@ -2,7 +2,7 @@ import numpy as np
 import time
 from numpy.random import default_rng
 rg = default_rng()
-from perf_pythranlib import fib, qsort_kernel, randmatstat_core, mandelperf, pisum, parse_int, printfd
+from perf_pythranlib import fib, qsort_kernel, randmatstat_core, randmatmul, mandelperf, pisum, parse_int, printfd
 
 
 ## randmatstat ##
@@ -14,13 +14,6 @@ def randmatstat(t):
     c = rg.standard_normal((t, n, n))
     d = rg.standard_normal((t, n, n))
     return randmatstat_core(t, a, b, c, d)
-
-## randmatmul ##
-
-def randmatmul(n):
-    A = rg.random((n,n))
-    B = rg.random((n,n))
-    return np.dot(A,B)
 
 def print_perf(name, time):
     print("pythran," + name + "," + str(time*1000))

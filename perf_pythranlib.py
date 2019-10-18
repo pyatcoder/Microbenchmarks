@@ -41,6 +41,13 @@ def randmatstat_core(t, a, b, c, d):
         w[i] = np.trace(np.linalg.matrix_power(np.dot(Q.T,Q), 4))
     return (np.std(v)/np.mean(v), np.std(w)/np.mean(w))
 
+## randmatmul ##
+#pythran export randmatmul(int64)
+def randmatmul(n):
+    A = np.random.rand(n,n)
+    B = np.random.rand(n,n)
+    return np.dot(A,B)
+
 
 ## mandelbrot ##
 def abs2(z):
