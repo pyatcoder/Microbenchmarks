@@ -77,7 +77,7 @@ def randmatmul(n, state):
 ## mandelbrot ##
 @jit(nopython=True, cache=True)
 def abs2(z):
-    return z.real*z.real +  z.imag*z.imag
+    return z.real*z.real + z.imag*z.imag
 
 @jit(nopython=True, cache=True)
 def mandel(z):

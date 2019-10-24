@@ -2,7 +2,7 @@ from numpy import zeros, empty, concatenate, trace, std, mean, dot, int64
 from numpy.linalg import matrix_power
 import time
 from numpy.random import default_rng
-from perf_cythonlib import fib, qsort, mandelperf, pisum, parse_int_core, printfd
+from perf_cythonlib import fib, qsort, mandelperf, randmatmul, pisum, parse_int_core, printfd
 rg = default_rng()
 
 
@@ -23,12 +23,6 @@ def randmatstat(t):
         w[i] = trace(matrix_power(dot(Q.T,Q), 4))
     return (std(v)/mean(v), std(w)/mean(w))
 
-## randmatmul ##
-
-def randmatmul(n):
-    A = rg.random((n,n))
-    B = rg.random((n,n))
-    return A @ B
 
 def parse_int(t):
     a = rg.integers(0, 2 ** 32, size=t)
@@ -82,7 +76,7 @@ if __name__=="__main__":
         qsort(lst, 0, len(lst)-1)
         t = time.time()-t
         if t < tmin: tmin = t
-    print_perf ("recursion_quicksort", tmin)
+    print_perf("recursion_quicksort", tmin)
 
     assert abs(pisum()-1.644834071848065) < 1e-6
     tmin = float('inf')
@@ -91,7 +85,7 @@ if __name__=="__main__":
         pisum()
         t = time.time()-t
         if t < tmin: tmin = t
-    print_perf ("iteration_pi_sum", tmin)
+    print_perf("iteration_pi_sum", tmin)
 
     (s1, s2) = randmatstat(1000)
     assert s1 > 0.5 and s1 < 1.0
@@ -101,7 +95,7 @@ if __name__=="__main__":
         randmatstat(1000)
         t = time.time()-t
         if t < tmin: tmin = t
-    print_perf ("matrix_statistics", tmin)
+    print_perf("matrix_statistics", tmin)
 
     tmin = float('inf')
     for i in range(mintrials):
@@ -110,7 +104,7 @@ if __name__=="__main__":
         assert C[0,0] >= 0
         t = time.time()-t
         if t < tmin: tmin = t
-    print_perf ("matrix_multiply", tmin)
+    print_perf("matrix_multiply", tmin)
 
     tmin = float('inf')
     for i in range(mintrials):
@@ -118,4 +112,4 @@ if __name__=="__main__":
         printfd(100000)
         t = time.time()-t
         if t < tmin: tmin = t
-    print_perf ("print_to_file", tmin)
+    print_perf("print_to_file", tmin)

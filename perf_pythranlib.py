@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.random import randn
 
 ## fibonacci ##
 #pythran export fib(int64)
@@ -29,6 +30,7 @@ def qsort_kernel(a, lo, hi):
         j = hi
     return a
 
+
 ## randmatstat ##
 #pythran export randmatstat_core(int64, float64[:,:,:] order(C), float64[:,:,:] order(C), float64[:,:,:] order(C), float64[:,:,:] order(C))
 def randmatstat_core(t, a, b, c, d):
@@ -40,6 +42,7 @@ def randmatstat_core(t, a, b, c, d):
         v[i] = np.trace(np.linalg.matrix_power(np.dot(P.T, P), 4))
         w[i] = np.trace(np.linalg.matrix_power(np.dot(Q.T,Q), 4))
     return (np.std(v)/np.mean(v), np.std(w)/np.mean(w))
+
 
 ## randmatmul ##
 #pythran export randmatmul(int64)

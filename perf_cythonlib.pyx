@@ -2,7 +2,6 @@ import numpy as np
 cimport cython
 #cython: language_level=3
 from libc.stdio cimport FILE, fopen, fprintf, fclose, sprintf
-from libc.stdlib cimport strtol
 from numpy.random import default_rng
 from numpy.linalg import matrix_power
 rg = default_rng()
@@ -54,16 +53,23 @@ def randmatstat(long t):
     cdef long i
     v = np.zeros(t)
     w = np.zeros(t)
-    a = rg.standard_normal((t, n, n))
-    b = rg.standard_normal((t, n, n))
-    c = rg.standard_normal((t, n, n))
-    d = rg.standard_normal((t, n, n))
     for i in range(t):
-        P = np.hstack((a[i], b[i], c[i], d[i]))
-        Q = np.vstack((np.hstack((a[i], b[i])), np.hstack((c[i], d[i]))))
+        a = rg.standard_normal((n, n))
+        b = rg.standard_normal((n, n))
+        c = rg.standard_normal((n, n))
+        d = rg.standard_normal((n, n))
+        P = np.hstack((a, b, c, d))
+        Q = np.vstack((np.hstack((a, b)), np.hstack((c, d))))
         v[i] = np.trace(matrix_power(np.dot(P.T, P), 4))
         w[i] = np.trace(matrix_power(np.dot(Q.T, Q), 4))
     return np.std(v)/np.mean(v), np.std(w)/np.mean(w)
+
+## randmatmul ##
+
+def randmatmul(n):
+    A = rg.random((n, n))
+    B = rg.random((n, n))
+    return A @ B
 
 ## mandelbrot ##
 
@@ -89,13 +95,13 @@ cpdef void mandelperf(long[:,:] a):
 
 def pisum():
     cdef:
-        double sum = 0.0
+        double s = 0.0
         long j, k
     for j in range(500):
-        sum = 0.0
+        s = 0.0
         for k in range(1, 10001):
-            sum += 1.0/(k*k)
-    return sum
+            s += 1.0/(k*k)
+    return s
 
 
 cpdef void parse_int_core(long[:] datain, long[:] dataout):
@@ -103,11 +109,20 @@ cpdef void parse_int_core(long[:] datain, long[:] dataout):
         long i
         long num = datain.shape[0]
         char s[11]
-        char **endptr
+        char c
+        long n
     for i in range(num):
         sprintf(s, "%lx", datain[i])
-        dataout[i] = strtol(s, endptr, 16)
-
+        n = 0
+        for j in range(11):
+            c = s[j]
+            if c == b'\0':
+                break
+            if c > b'9':
+                n = 16 * n + c - 87
+            else:
+                n = 16 * n + c - 48
+        dataout[i] = n
 
 cpdef void printfd(long t):
     cdef:
