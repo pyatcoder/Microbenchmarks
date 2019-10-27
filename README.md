@@ -35,8 +35,10 @@ Note that this refers to GNU Make, so BSD users will need to run `gmake`.
 
 ## Python 関係で以下のコードを追加
 
-- python (perf_python.py) perf.py を random で numpy 1.17.0 で導入された PCG64 を使用するように修正。numpy は、>= 1.17.0 をインストールしてください。 
-- pypy (perf_pypy.py) perf_python.py と同じコード
+- python (perf_python.py)  
+perf.py を random で numpy 1.17.0 で導入された PCG64 を使用するように修正。numpy は、>= 1.17.0 をインストールしてください。 
+- pypy (perf_pypy.py)  
+perf_python.py とコードは同じ
 - numba (perf_numba.py)
 - cython (perf_cython.py, perf_cythonlib.pyx)
 - pythran (perf_pythran.py, perf_pythranlib.py)
