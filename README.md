@@ -35,13 +35,17 @@ Note that this refers to GNU Make, so BSD users will need to run `gmake`.
 
 ## Python 関係で以下のコードを追加
 
-- python
-- pypy
-- numba
-- cython
-- pythran
+- python (perf_python.py) perf.py を random で numpy 1.17.0 で導入された PCG64 を使用するように修正。numpy は、>= 1.17.0 をインストールしてください。 
+- pypy (perf_pypy.py) perf_python.py と同じコード
+- numba (perf_numba.py)
+- cython (perf_cython.py, perf_cythonlib.pyx)
+- pythran (perf_pythran.py, perf_pythranlib.py)
 
 ## Cython 及び Pythran のコンパイルコマンド
+
+make ファイルに Cython 及び Pythran のコンパイルコマンドを書いていないので、事前にコンパイルしておく必要があります。
+
+コンパイルコマンドは、以下を使っています。
 
 Cython 
 
@@ -57,7 +61,7 @@ Pythran
 pythran -std=c++17 -O3 -DUSE_XSIMD -march=native perf_pythranlib.py
 ```
 
-C++のコンパイラーは、g++ よりも clang++ を使ったほうが速かったので、~/.pythranrc を以下のように修正した
+C++のコンパイラーは、g++-8 よりも clang++-8 を使ったほうが速かったので、~/.pythranrc を以下のように修正した
 
 ```~/.pythranrc
 [compiler]
@@ -73,4 +77,3 @@ CC=/usr/bin/clang-8
 CXX=/usr/bin/clang++-8
 ignoreflags=-Wstrict-prototypes
 ```
-
